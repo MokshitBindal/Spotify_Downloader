@@ -6,6 +6,8 @@ Searches YouTube for tracks matching Spotify metadata.
 import yt_dlp
 from typing import Optional, Dict, List
 import logging
+import time
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +29,13 @@ class YouTubeSearcher:
         self.min_duration_match = config.get('youtube', {}).get('min_duration_match', 0.9)
         self.max_duration_match = config.get('youtube', {}).get('max_duration_match', 1.1)
     
-    def search(self, track: Dict) -> Optional[str]:
+    def search(self, track: Dict, retry_count: int = 0) -> Optional[str]:
         """
-        Search YouTube for a track.
+        Search YouTube for a track with retry logic.
         
         Args:
             track: Track dictionary from Spotify
+            retry_count: Current retry attempt
             
         Returns:
             YouTube video URL or None
@@ -40,11 +43,20 @@ class YouTubeSearcher:
         query = self._build_search_query(track)
         logger.info(f"Searching YouTube for: {query}")
         
+        # Add random delay to avoid rate limiting
+        if retry_count > 0:
+            delay = random.uniform(2, 5) * retry_count
+            logger.info(f"Retry attempt {retry_count}, waiting {delay:.1f}s...")
+            time.sleep(delay)
+        
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
             'extract_flat': True,
             'format': 'bestaudio/best',
+            'socket_timeout': 30,
+            'retries': 3,
+            'nocheckcertificate': True,
         }
         
         try:

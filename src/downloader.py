@@ -45,21 +45,35 @@ class Downloader:
         """
         output_path = self._get_output_path(track)
         
-        # Check if file already exists
+        # Check if file already exists and is complete
         if self.skip_existing and output_path.exists():
-            logger.info(f"File already exists: {output_path}")
-            return str(output_path)
+            if self._is_file_complete(output_path, track):
+                file_size = output_path.stat().st_size
+                logger.info(f"File already exists and is complete ({self._format_size(file_size)}): {output_path.name}")
+                return str(output_path)
+            else:
+                # File exists but appears incomplete - delete and re-download
+                file_size = output_path.stat().st_size
+                logger.warning(f"Existing file appears incomplete ({self._format_size(file_size)}), re-downloading...")
+                output_path.unlink()
         
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
-        # Prepare yt-dlp options
+        # Prepare yt-dlp options with better error handling
         ydl_opts = {
             'format': 'bestaudio/best',
             'outtmpl': str(output_path.with_suffix('.%(ext)s')),
             'quiet': True,
             'no_warnings': True,
             'extract_audio': True,
+            'retries': 3,
+            'fragment_retries': 3,
+            'http_chunk_size': 1048576,  # 1MB chunks
+            'throttledratelimit': 100000,  # 100KB/s minimum
+            'socket_timeout': 30,
+            'ignoreerrors': False,
+            'nocheckcertificate': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': self._get_codec(),
@@ -167,3 +181,66 @@ class Downloader:
         filename = filename.strip('. ')
         
         return filename
+    
+    def _is_file_complete(self, file_path: Path, track: Dict) -> bool:
+        """
+        Check if downloaded file is complete by validating it with mutagen.
+        
+        Args:
+            file_path: Path to the file
+            track: Track metadata
+            
+        Returns:
+            True if file is complete and valid, False otherwise
+        """
+        try:
+            from mutagen import File
+            
+            # Try to open and read the file with mutagen
+            audio_file = File(file_path)
+            
+            # If mutagen can't identify it, file is likely corrupted
+            if audio_file is None:
+                logger.warning(f"Cannot identify audio format: {file_path.name}")
+                return False
+            
+            # Check if file has a valid duration
+            if hasattr(audio_file.info, 'length') and audio_file.info.length > 0:
+                file_duration = audio_file.info.length
+                expected_duration = track['duration_ms'] / 1000
+                
+                # Allow 10% variance in duration
+                duration_ratio = file_duration / expected_duration
+                if 0.85 <= duration_ratio <= 1.15:
+                    logger.debug(f"File validation passed: duration {file_duration:.1f}s vs expected {expected_duration:.1f}s")
+                    return True
+                else:
+                    logger.warning(f"Duration mismatch: {file_duration:.1f}s vs expected {expected_duration:.1f}s")
+                    return False
+            
+            # If no duration info but file can be read, consider it valid if size is reasonable
+            file_size = file_path.stat().st_size
+            # Rough estimate: at least 500KB per minute for compressed audio
+            min_expected_size = (track['duration_ms'] / 1000 / 60) * 500000
+            
+            if file_size >= min_expected_size * 0.7:  # Allow 30% margin
+                logger.debug(f"File validation passed by size: {self._format_size(file_size)}")
+                return True
+            else:
+                logger.warning(f"File too small: {self._format_size(file_size)} vs min expected {self._format_size(int(min_expected_size))}")
+                return False
+            
+        except Exception as e:
+            logger.warning(f"Error validating file {file_path.name}: {e}")
+            # If file can't be validated but exists and has reasonable size, keep it
+            file_size = file_path.stat().st_size
+            return file_size > 500000  # At least 500KB
+    
+    @staticmethod
+    def _format_size(bytes: int) -> str:
+        """Format file size in human-readable format."""
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if bytes < 1024.0:
+                return f"{bytes:.1f}{unit}"
+            bytes /= 1024.0
+        return f"{bytes:.1f}TB"

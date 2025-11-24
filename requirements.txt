@@ -15,6 +15,12 @@ Pillow==10.4.0
 # HTTP requests
 requests==2.32.3
 
+# Alternative: Use spotdl which supports multiple sources
+spotdl==4.2.5
+
+# Or use these for basic Deezer API access
+deezer-python==6.1.0
+
 # Configuration
 PyYAML==6.0.2
 

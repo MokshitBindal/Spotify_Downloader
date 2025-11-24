@@ -7,7 +7,6 @@ __pycache__/
 build/
 develop-eggs/
 dist/
-downloads/
 eggs/
 .eggs/
 lib/
@@ -19,6 +18,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Virtual Environment
 venv/
@@ -39,12 +39,17 @@ ENV/
 *.log
 logs/
 
-# Downloaded files
+# Downloaded files (music output)
 downloads/
 output/
 
-# Config with credentials
+# User configuration and runtime files
+.user_config.json
 config/config.yaml
+.download_tracker.json
+
+# Failed downloads tracking (runtime generated)
+.failed_downloads.json
 
 # OS
 .DS_Store
@@ -53,3 +58,70 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+*.bak
+*.backup
+
+# PyInstaller files
+*.spec
+build/
+dist/
+
+# Testing files
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Documentation build files (keep source docs)
+docs/_build/
+docs/.doctrees/
+
+# Cache directories and files
+.cache
+.cache/
+.spotify_cache/
+
+# Documentation files (keep only README.md)
+API_PROVIDERS.md
+AUR_INSTALLATION.md
+AUR_READY.md
+FREE_FLAC_GUIDE.md
+FREE_SOURCES_GUIDE.md
+QUICK_RECOMMENDATION.md
+SETUP_SOURCES.md
+USER_PREFERENCES_GUIDE.md
+WHATS_NEW.md
+FLAC_SETUP_GUIDE.md
+QUICKSTART.md
+FILE_STRUCTURE.md
+
+# Helper/setup scripts (keep lean - no extra scripts)
+download_missed.py
+quick-setup.sh
+build-executable.sh
+setup-free-sources.sh
+setup.sh
+
+# Packaging files (not needed in repo)
+.gitattributes
+MANIFEST.in
+setup.py
+pyproject.toml
+PKGBUILD
+LICENSE
+
+# Old/redundant files
+requirements-deezer.txt
+requirements-*.txt
+.env
+.env.example
+
+# AUR build artifacts (generated during package build)
+.SRCINFO
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+pkg/
+
+# Git
+.git/
