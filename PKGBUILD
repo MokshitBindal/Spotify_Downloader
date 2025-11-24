@@ -14,7 +14,7 @@ optdepends=(
     'python-spotipy: Spotify API access'
 )
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/MokshitBindal/Spotify_Downloader/archive/v${pkgver}.tar.gz")
-sha256sums=('0a821a4b2da3c6fd6e7a903bf5fd007ff08069e501bf6a0927263b89905f6ec2')
+sha256sums=('92fc99206458eb64c5da4bb4a2fcad802dca532889640b0319cebe208a0ee782')
 
 build() {
     cd "${srcdir}/Spotify_Downloader-${pkgver}"

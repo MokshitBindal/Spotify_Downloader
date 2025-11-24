@@ -95,6 +95,7 @@ WHATS_NEW.md
 FLAC_SETUP_GUIDE.md
 QUICKSTART.md
 FILE_STRUCTURE.md
+AUR_SUBMISSION.md
 
 # Helper/setup scripts (keep lean - no extra scripts)
 download_missed.py
@@ -115,11 +116,12 @@ requirements-*.txt
 .env.example
 
 # AUR build artifacts (generated during package build)
-.SRCINFO
+# Note: .SRCINFO is now tracked for AUR submission
 *.tar.gz
 *.tar.xz
 *.tar.bz2
 pkg/
+src/spotify-downloader/
 
 # Git
 .git/
