@@ -1,119 +1,90 @@
 # Spotify Music Downloader
 
-A Python-based tool to download songs from Spotify playlists in various audio formats including **lossless FLAC from Deezer** (like Deezloader Telegram bot).
+Download music from Spotify playlists with beautiful terminal UI and smart retry features.
 
-## Features
+## ✨ Features
 
-- 🎵 **Lossless FLAC downloads** from Deezer (premium quality)
-- 📥 Download entire Spotify playlists, albums, or individual tracks
-- 🎧 Multiple audio format support (FLAC, MP3, WAV, M4A, OPUS)
-- 🎼 Automatic metadata tagging (artist, album, artwork, etc.)
-- ⚡ Concurrent downloads for faster processing
-- � Multi-source support (Deezer → YouTube fallback)
-- �📋 Progress tracking and logging
-- 🔍 Smart search matching
-- 💾 Organized file structure by artist/album
+- 🎵 **Multi-source downloads** from free legal sources (Internet Archive, Jamendo, YouTube)
+- 📥 Download playlists, albums, tracks, or search by song name
+- 🎧 Multiple formats (FLAC, MP3, WAV, M4A, OPUS) with quality selection
+- 🎼 Automatic metadata & artwork embedding
+- 🎨 Beautiful fixed-position progress display with pacman animation
+- ⚡ Concurrent downloads (configurable)
+- 🔄 Smart failed download tracking & retry system
+- 🔍 Advanced song search (works with just song name or "Artist - Song")
+- ⚙️ Interactive first-run setup wizard for preferences
+- 💾 Organized downloads by artist/album
 
-## Prerequisites
+## 🚀 Quick Start
 
-- Python 3.8 or higher
-- Spotify Developer Account (for API credentials)
-- FFmpeg installed on your system
+### Prerequisites
+- Python 3.8+
+- FFmpeg (`sudo apt install ffmpeg` on Ubuntu/Debian)
 
-## Installation
-
-1. Clone the repository:
+### Installation
 
 ```bash
+git clone <repository-url>
 cd Spotify_Downloader
-```
-
-2. Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
-3. Install FFmpeg:
+### First Run Setup
+On first run, you'll be guided through an interactive setup to configure:
+- Download folder location
+- Preferred audio format (FLAC, MP3, etc.)
+- Audio quality
+- Number of concurrent downloads
+- Metadata preferences
 
-   - **Ubuntu/Debian**: `sudo apt-get install ffmpeg`
-   - **macOS**: `brew install ffmpeg`
-   - **Windows**: Download from [ffmpeg.org](https://ffmpeg.org/download.html)
+Just run any command and the wizard will start automatically!
 
-4. Set up Spotify API credentials:
-   - Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-   - Create a new app
-   - Copy your Client ID and Client Secret
-   - Update `config/config.yaml` with your credentials
+## 📖 Usage
 
-## Configuration
-
-Edit `config/config.yaml`:
-
-```yaml
-spotify:
-  client_id: "your_client_id"
-  client_secret: "your_client_secret"
-
-download:
-  output_dir: "./downloads"
-  audio_format: "mp3" # mp3, flac, wav, m4a
-  audio_quality: "320" # for mp3: 128, 192, 256, 320
-  max_concurrent: 3
-
-preferences:
-  embed_metadata: true
-  embed_artwork: true
-  organize_by_artist: true
-```
-
-## Usage
-
-### Download a Playlist
+### Basic Commands
 
 ```bash
-python main.py --playlist <spotify_playlist_url>
+# Download playlist
+python main.py --playlist https://open.spotify.com/playlist/xxxxx
+
+# Download album
+python main.py --album https://open.spotify.com/album/xxxxx
+
+# Download single track
+python main.py --track https://open.spotify.com/track/xxxxx
+
+# Search and download by song name
+python main.py --song "Metallica - Enter Sandman"
+python main.py --song "Bohemian Rhapsody"  # Works even without artist
+
+# Retry failed downloads
+python main.py --retry-failed
 ```
 
-### Download with Custom Format
+### Advanced Options
 
 ```bash
-python main.py --playlist <url> --format flac
+# Custom format and quality
+python main.py --playlist <url> --format flac --quality high
+
+# Custom output folder
+python main.py --playlist <url> --output ~/Music
+
+# More concurrent downloads
+python main.py --playlist <url> --concurrent 5
 ```
 
-### Download Single Track
+### Manage Preferences
 
 ```bash
-python main.py --track <spotify_track_url> --format mp3 --quality 320
-```
+# Show current preferences
+python main.py --show-preferences
 
-### Command Line Options
+# Change download folder
+python main.py --set-download-folder ~/Music/Spotify
 
-```
-Options:
-  --playlist URL        Spotify playlist URL
-  --track URL          Spotify track URL
-  --album URL          Spotify album URL
-  --format FORMAT      Audio format (mp3, flac, wav, m4a) [default: mp3]
-  --quality QUALITY    Audio quality for MP3 (128, 192, 256, 320) [default: 320]
-  --output DIR         Output directory [default: ./downloads]
-  --concurrent N       Number of concurrent downloads [default: 3]
-  --no-metadata        Skip metadata embedding
-  --no-artwork         Skip artwork embedding
-  -h, --help          Show help message
-```
-
-## Examples
-
-```bash
-# Download playlist in FLAC format
-python main.py --playlist https://open.spotify.com/playlist/xxxxx --format flac
-
-# Download album in MP3 320kbps
-python main.py --album https://open.spotify.com/album/xxxxx --format mp3 --quality 320
-
-# Download to custom directory
-python main.py --playlist https://open.spotify.com/playlist/xxxxx --output ~/Music/Spotify
+# Reset all preferences (restart wizard)
+python main.py --reset-preferences
 ```
 
 ## Project Structure
@@ -139,32 +110,85 @@ Spotify_Downloader/
 └── downloads/                      # Downloaded songs (auto-created)
 ```
 
-## How It Works
+## 🎯 How It Works
 
-1. **Fetch Metadata**: Retrieves track information from Spotify API
-2. **Search YouTube**: Finds matching videos on YouTube
-3. **Download Audio**: Downloads audio from YouTube
-4. **Convert Format**: Converts to desired format using FFmpeg
-5. **Add Metadata**: Embeds artist, title, album, artwork, etc.
-6. **Organize Files**: Saves to organized directory structure
+1. **Fetch Metadata**: Gets track info from Spotify API
+2. **Multi-Source Search**: Searches across multiple free sources in priority order:
+   - Internet Archive (archive.org) - Best quality FLAC
+   - Jamendo - Creative Commons music
+   - YouTube - Fallback (up to 256kbps)
+3. **Smart Download**: Downloads from first available source
+4. **Processing**: Converts to desired format using FFmpeg
+5. **Metadata**: Embeds artist, title, album, artwork automatically
+6. **Organization**: Saves in organized folder structure
+7. **Tracking**: Remembers completed downloads and failed attempts
 
-## Limitations
+## 🎨 Features in Detail
 
-- Downloads are sourced from YouTube, so quality depends on available videos
-- Requires active internet connection
-- Respects rate limits of Spotify and YouTube APIs
+### Beautiful Terminal UI
+- Fixed-position progress bar with pacman animation
+- Real-time download statistics
+- Clean, non-scrolling updates
+- Shows current track, source, format, and progress
 
-## Legal Notice
+### Smart Retry System
+- Automatically tracks failed downloads with timestamps
+- Retry any time with `--retry-failed`
+- Failed list overwrites each run (only keeps most recent failures)
+- Auto-removes from failed list when successfully downloaded
 
-This tool is for educational purposes only. Please respect copyright laws and only download music you have the right to access. Support artists by purchasing their music or using legitimate streaming services.
+### Flexible Search
+- Download by Spotify URL (playlist, album, track)
+- Search by just song name: `"Enter Sandman"`
+- Search with artist: `"Metallica - Enter Sandman"`
+- Advanced Spotify query syntax for accurate matching
 
-## Troubleshooting
+## 🛠️ Configuration
 
-- **FFmpeg not found**: Ensure FFmpeg is installed and in your system PATH
-- **Spotify API errors**: Check your credentials in config.yaml
-- **Download failures**: Some videos may not be available; the tool will skip them
-- **Quality issues**: Try different search terms or download from different playlists
+All preferences are stored in `.user_config.json` and can be:
+- Set during first-run wizard
+- Changed with `--set-download-folder`
+- Reset with `--reset-preferences`
+- Viewed with `--show-preferences`
 
-## License
+Available settings:
+- Download folder path
+- Audio format (FLAC, MP3, WAV, M4A, OPUS)
+- Quality (high, medium, low)
+- Max concurrent downloads (1-10)
+- Metadata embedding preferences
+
+## 📝 Additional Files
+
+- `.user_config.json` - Your preferences
+- `.failed_downloads.json` - Failed tracks (with retry info)
+- `.download_tracker.json` - Prevents re-downloading
+- `config.yaml` - Spotify API credentials (create from config.yaml)
+
+## ⚠️ Legal Notice
+
+This tool downloads from **free, legal sources only**:
+- Internet Archive (public domain & legal uploads)
+- Jamendo (Creative Commons licensed music)
+- YouTube (public content)
+
+Always respect copyright laws and support artists by purchasing their music or using official streaming services.
+
+## 🐛 Troubleshooting
+
+**FFmpeg not found**: Install with `sudo apt install ffmpeg`  
+**No songs found**: Try different search terms or use Spotify URLs  
+**Failed downloads**: Use `--retry-failed` to retry, or check `.failed_downloads.json`  
+**Quality issues**: Internet Archive and Jamendo provide best quality (FLAC), YouTube is fallback
+
+## 📄 License
 
 MIT License - See LICENSE file for details
+
+## 🤝 Contributing
+
+Contributions welcome! This project uses:
+- `spotipy` for Spotify API
+- `yt-dlp` for YouTube downloads
+- `mutagen` for metadata embedding
+- `click` for CLI interface
