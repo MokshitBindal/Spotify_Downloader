@@ -8,29 +8,30 @@ Download music from Spotify playlists with beautiful terminal UI and smart retry
 - 📥 Download playlists, albums, tracks, or search by song name
 - 🎧 Multiple formats (FLAC, MP3, WAV, M4A, OPUS) with quality selection
 - 🎼 Automatic metadata & artwork embedding
-- 🎨 Beautiful fixed-position progress display with pacman animation
 - ⚡ Concurrent downloads (configurable)
 - 🔄 Smart failed download tracking & retry system
 - 🔍 Advanced song search (works with just song name or "Artist - Song")
-- ⚙️ Interactive first-run setup wizard for preferences
 - 💾 Organized downloads by artist/album
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
 - FFmpeg (`sudo apt install ffmpeg` on Ubuntu/Debian)
 
 ### Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/MokshitBindal/Spotify_Downloader.git
 cd Spotify_Downloader
 pip install -r requirements.txt
 ```
 
 ### First Run Setup
+
 On first run, you'll be guided through an interactive setup to configure:
+
 - Download folder location
 - Preferred audio format (FLAC, MP3, etc.)
 - Audio quality
@@ -87,29 +88,6 @@ python main.py --set-download-folder ~/Music/Spotify
 python main.py --reset-preferences
 ```
 
-## Project Structure
-
-```
-Spotify_Downloader/
-├── main.py                          # Entry point with CLI
-├── requirements.txt                 # Dependencies
-├── src/
-│   ├── __init__.py
-│   ├── spotify_client.py           # Spotify API client
-│   ├── multi_source_downloader.py  # Multi-source download manager
-│   ├── internetarchive_client.py   # Internet Archive downloads
-│   ├── jamendo_client.py           # Jamendo API client
-│   ├── deemix_client.py            # Deezer client
-│   ├── downloader.py               # YouTube downloader
-│   ├── youtube_search.py           # YouTube search
-│   ├── metadata.py                 # Metadata embedding
-│   ├── progress_display.py         # Terminal UI
-│   ├── user_config.py              # User preferences
-│   ├── download_tracker.py         # Track completed downloads
-│   └── utils.py                    # Utility functions
-└── downloads/                      # Downloaded songs (auto-created)
-```
-
 ## 🎯 How It Works
 
 1. **Fetch Metadata**: Gets track info from Spotify API
@@ -126,18 +104,21 @@ Spotify_Downloader/
 ## 🎨 Features in Detail
 
 ### Beautiful Terminal UI
+
 - Fixed-position progress bar with pacman animation
 - Real-time download statistics
 - Clean, non-scrolling updates
 - Shows current track, source, format, and progress
 
 ### Smart Retry System
+
 - Automatically tracks failed downloads with timestamps
 - Retry any time with `--retry-failed`
 - Failed list overwrites each run (only keeps most recent failures)
 - Auto-removes from failed list when successfully downloaded
 
 ### Flexible Search
+
 - Download by Spotify URL (playlist, album, track)
 - Search by just song name: `"Enter Sandman"`
 - Search with artist: `"Metallica - Enter Sandman"`
@@ -146,12 +127,14 @@ Spotify_Downloader/
 ## 🛠️ Configuration
 
 All preferences are stored in `.user_config.json` and can be:
+
 - Set during first-run wizard
 - Changed with `--set-download-folder`
 - Reset with `--reset-preferences`
 - Viewed with `--show-preferences`
 
 Available settings:
+
 - Download folder path
 - Audio format (FLAC, MP3, WAV, M4A, OPUS)
 - Quality (high, medium, low)
@@ -165,14 +148,6 @@ Available settings:
 - `.download_tracker.json` - Prevents re-downloading
 - `config.yaml` - Spotify API credentials (create from config.yaml)
 
-## ⚠️ Legal Notice
-
-This tool downloads from **free, legal sources only**:
-- Internet Archive (public domain & legal uploads)
-- Jamendo (Creative Commons licensed music)
-- YouTube (public content)
-
-Always respect copyright laws and support artists by purchasing their music or using official streaming services.
 
 ## 🐛 Troubleshooting
 
@@ -181,13 +156,10 @@ Always respect copyright laws and support artists by purchasing their music or u
 **Failed downloads**: Use `--retry-failed` to retry, or check `.failed_downloads.json`  
 **Quality issues**: Internet Archive and Jamendo provide best quality (FLAC), YouTube is fallback
 
-## 📄 License
-
-MIT License - See LICENSE file for details
-
 ## 🤝 Contributing
 
 Contributions welcome! This project uses:
+
 - `spotipy` for Spotify API
 - `yt-dlp` for YouTube downloads
 - `mutagen` for metadata embedding
