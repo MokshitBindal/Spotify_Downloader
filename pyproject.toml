@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spotify-downloader"
+version = "1.0.0"
+description = "Download Spotify playlists, albums, and tracks in FLAC/MP3 format from free sources"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Mokshit Bindal", email = "your-email@example.com"}
+]
+keywords = ["spotify", "downloader", "music", "flac", "mp3", "audio"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Multimedia :: Sound/Audio",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "spotipy>=2.24.0",
+    "yt-dlp>=2024.10.7",
+    "mutagen>=1.47.0",
+    "pydub>=0.25.1",
+    "click>=8.1.7",
+    "tqdm>=4.66.5",
+    "requests>=2.31.0",
+    "PyYAML>=6.0.1",
+    "pyaudioop-lts>=0.2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MokshitBindal/spotify-downloader"
+Documentation = "https://github.com/MokshitBindal/spotify-downloader#readme"
+Repository = "https://github.com/MokshitBindal/spotify-downloader"
+"Bug Tracker" = "https://github.com/MokshitBindal/spotify-downloader/issues"
+
+[project.scripts]
+spotify-downloader = "main:main"
+spotdl = "main:main"
+
+[tool.setuptools]
+packages = ["src"]
+include-package-data = true

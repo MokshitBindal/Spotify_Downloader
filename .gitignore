@@ -105,11 +105,8 @@ setup.sh
 
 # Packaging files (not needed in repo)
 .gitattributes
-MANIFEST.in
-setup.py
-pyproject.toml
-PKGBUILD
-LICENSE
+
+# Note: MANIFEST.in, setup.py, pyproject.toml, PKGBUILD, LICENSE are now tracked for AUR
 
 # Old/redundant files
 requirements-deezer.txt
