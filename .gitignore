@@ -96,6 +96,8 @@ FLAC_SETUP_GUIDE.md
 QUICKSTART.md
 FILE_STRUCTURE.md
 AUR_SUBMISSION.md
+AUR_PUBLISHING_JOURNEY.md
+BUGS_AND_FEATURES.md
 
 # Helper/setup scripts (keep lean - no extra scripts)
 download_missed.py
